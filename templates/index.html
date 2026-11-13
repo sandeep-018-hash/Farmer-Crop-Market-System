@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Crop Market System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="welcome-box">
+        {% if user %}
+            <div class="welcome-title">
+                <h2>Welcome, {{ user.farmer_name }}!</h2>
+                <p>Username: {{ user.username }}</p>
+            </div>
+
+            <div class="welcome-buttons">
+                <form method="POST" action="{{ url_for('logout') }}">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+                
+
+            </div>
+            
+        {% else %}
+            <div class="welcome-title">
+                <h2>Welcome, Farmer!</h2>
+                <p>Please login to continue.</p>
+            </div>
+
+            <div class="welcome-buttons">
+                <a href="{{ url_for('register') }}" class="login-btn">Register</a>
+                <a href="{{ url_for('login') }}" class="login-btn">Farmer Login</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="header-title">
+        <h1>🌾 Farmer Crop Market System</h1>
+        <p>Search crop markets and register your crops</p>
+    </div>
+</header>
+
+<main>
+    <nav class="green-dashboard">
+        <a href="#crop-search" class="nav-item">🔍 Search Crop Market</a>
+        <a href="#add-crop" class="nav-item">🌱 Add Farmer &amp; Crop Details</a>
+        <a href="#registered-crops" class="nav-item">📋 Registered Farmer Crops</a>
+        <a href="#available-crops" class="nav-item">🌿 Available Market Crops</a>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="message {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- SEARCH CROP MARKET -->
+    <section class="panel" id="crop-search">
+        <h2>🔍 Search Crop Market</h2>
+        <p>Search farmer crop details by crop name.</p>
+
+        <form method="POST" action="{{ url_for('home') }}">
+            <input
+                type="text"
+                name="crop"
+                placeholder="Example: Mango"
+                value="{{ crop_name or '' }}"
+                maxlength="120"
+                required
+            >
+            <button type="submit">Search Crop</button>
+        </form>
+
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+
+        {% if results %}
+            <h3>Search Results for "{{ crop_name }}"</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Farmer Name</th>
+                            <th>Crop</th>
+                            <th>Quantity (kg)</th>
+                            <th>Price (₹/kg)</th>
+                            <th>Location</th>
+                            <th>Market Name</th>
+                            <th>Phone Number</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in results %}
+                            <tr>
+                                <td>{{ item["farmer_name"] }}</td>
+                                <td>{{ item["crop"]|title }}</td>
+                                <td>{{ item["quantity"] }}</td>
+                                <td>₹{{ item["expected_price"] }}</td>
+                                <td>{{ item["location"] }}</td>
+                                <td>{{ item["market_name"] or "Not provided" }}</td>
+                                <td>{{ item["phone_number"] or "Not provided" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- ADD FARMER AND CROP DETAILS -->
+    <section class="panel" id="add-crop">
+        <h2>🌱 Add Farmer &amp; Crop Details</h2>
+
+        {% if user %}
+            <p>Add a fruit or crop using this form.</p>
+
+            <form method="POST" action="{{ url_for('add_crop') }}" class="farmer-form">
+
+               
+           <label for="farmer_name">Farmer Name</label>
+           <input
+               id="farmer_name"
+               type="text"
+               value="{{ user.farmer_name|upper }}"
+               readonly
+          >
+
+                <label for="new_crop">Fruit / Crop Name</label>
+                <input
+                    id="new_crop"
+                    type="text"
+                    name="new_crop"
+                    maxlength="80"
+                    placeholder="Example: Mango"
+                    required
+                >
+
+                <label for="quantity">Quantity (kg)</label>
+                <input
+                    id="quantity"
+                    type="number"
+                    name="quantity"
+                    min="0"
+                    step="any"
+                    placeholder="Example: 100"
+                    required
+                >
+
+                <label for="expected_price">Price per kg (₹)</label>
+                <input
+                    id="expected_price"
+                    type="number"
+                    name="expected_price"
+                    min="0"
+                    step="any"
+                    placeholder="Example: 40"
+                    required
+                >
+
+                <label for="location">Location / Village</label>
+                <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    maxlength="120"
+                    placeholder="Enter village or town"
+                    required
+                >
+
+                <label for="market_name">Market Name</label>
+                <input
+                    id="market_name"
+                    type="text"
+                    name="market_name"
+                    maxlength="120"
+                    placeholder="Example: Anapurna Market Center"
+                    required
+                >
+
+                <label for="phone_number">Farmer Phone Number</label>
+                <input
+                    id="phone_number"
+                    type="tel"
+                    name="phone_number"
+                    inputmode="numeric"
+                    pattern="[6-9][0-9]{9}"
+                    maxlength="10"
+                    placeholder="Enter 10-digit mobile number"
+                    title="Enter a valid 10-digit Indian mobile number"
+                    required
+                >
+
+               <button type="submit" class="login-btn">
+                   Save Crop Details
+               </button>
+            </form>
+
+        {% else %}
+            <p>Please <a href="{{ url_for('login') }}">log in</a> to add crop details.</p>
+        {% endif %}
+    </section>
+
+   
+
+<!-- REGISTERED FARMER CROPS -->
+<section class="panel" id="registered-crops">
+    <h2>📋 Registered Farmer Crops</h2>
+
+    {% if farmer_crops %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Farmer Name</th>
+                        <th>Crop</th>
+                        <th>Quantity (kg)</th>
+                        <th>Price (₹/kg)</th>
+                        <th>Location</th>
+                        <th>Market Name</th>
+                        <th>Phone</th>
+                        <th>Stock Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in farmer_crops %}
+                    <tr>
+                        <td>{{ item["farmer_name"] }}</td>
+                        <td>{{ item["crop"]|title }}</td>
+                        <td>{{ item["quantity"] }}</td>
+                        <td>₹{{ item["expected_price"] }}</td>
+                        <td>{{ item["location"] }}</td>
+                        <td>{{ item["market_name"] or "Not provided" }}</td>
+                        <td>{{ item["phone_number"] or "Not provided" }}</td>
+
+                        <td>
+                            {% if item["quantity"]|float == 0 %}
+                                <span class="stock-status out-of-stock">
+                                    Out of Stock
+                                </span>
+                            {% else %}
+                                <span class="stock-status in-stock">
+                                    In Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if user and item["owner_user_id"] == user["id"] %}
+
+                                <a href="{{ url_for('edit_crop', crop_id=item['id']) }}"
+                                   class="edit-btn">
+                                    Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{{ url_for('delete_crop', crop_id=item['id']) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this crop?');">
+
+                                    <button type="submit" class="delete-btn">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            {% else %}
+                                <span class="view-only">
+                                    View Only
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <p>No farmer crops registered yet. Add your first crop above!</p>
+    {% endif %}
+</section>
+
+
+
+    <!-- AVAILABLE MARKET CROPS -->
+    <section class="panel" id="available-crops">
+        <h2>🌿 Available Market Crops</h2>
+
+        {% if available_crops %}
+            <div class="grid">
+                {% for item in available_crops %}
+                    <div class="card">
+                        <h3>🌱 {{ item["crop"]|title }}</h3>
+
+                        <p><strong>Farmer:</strong> {{ item["farmer_name"] }}</p>
+                        <p><strong>Quantity:</strong> {{ item["quantity"] }} kg</p>
+                        <p><strong>Price:</strong> ₹{{ item["expected_price"] }}/kg</p>
+                        <p><strong>Location:</strong> {{ item["location"] }}</p>
+                        <p><strong>Market Name:</strong> {{ item["market_name"] or "Not provided" }}</p>
+                        <p><strong>Phone:</strong> {{ item["phone_number"] or "Not provided" }}</p>
+
+                        {% if item["quantity"]|float == 0 %}
+                            <span class="stock-status out-of-stock">Out of Stock</span>
+                        {% else %}
+                            <span class="stock-status in-stock">In Stock</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <p>No crop listings yet. Log in and add the first crop.</p>
+        {% endif %}
+    </section>
+</main>
+
+<footer>
+    <p>Farmer Crop Market System | Student Project</p>
+</footer>
+
+</body>
+</html>

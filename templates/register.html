@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="register-page">
+
+<header class="register-header">
+    <h1>🌱 Farmer Registration</h1>
+    <p>Join our Farmer Crop Market System</p>
+</header>
+
+<main class="register-main">
+    <section class="register-card">
+
+        <div class="register-icon">🌾</div>
+        <h2>Create Your Account</h2>
+        <p class="register-subtitle">
+            Register to sell your crops directly in the market.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <p class="message {{ category }}">{{ msg }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('register') }}" class="register-form">
+
+            <label for="farmer_name">Farmer Name</label>
+            <input id="farmer_name" name="farmer_name"
+                   type="text" maxlength="80"
+                   placeholder="Enter your full name" required>
+
+            <label for="username">Username</label>
+            <input id="username" name="username"
+                   type="text" minlength="4" maxlength="30"
+                   pattern="[A-Za-z0-9_]+"
+                   title="Use letters, numbers, and underscores"
+                   autocomplete="username"
+                   placeholder="Create username" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password"
+                   type="password" minlength="8"
+                   autocomplete="new-password"
+                   placeholder="Create password" required>
+
+            <small>Use at least 8 characters for your password.</small>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <p class="register-login">
+            Already registered?
+            <a href="{{ url_for('login') }}">Login here</a>
+        </p>
+
+        <a class="register-home" href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+    </section>
+</main>
+</body>
+</html>

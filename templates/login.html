@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="register-page">
+
+<header class="register-header">
+    <h1>🌱 Farmer Crop Market System</h1>
+</header>
+
+<main class="register-main">
+    <section class="register-card">
+
+        <div class="register-icon">👨‍🌾</div>
+
+        <h2>Farmer Login</h2>
+        <p class="register-subtitle">
+            Login to manage your crops and market details.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="message {{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for('login') }}"
+              class="register-form">
+
+            <label for="username">Username</label>
+            <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="register-login">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Register here</a>
+        </div>
+
+        <a href="{{ url_for('home') }}" class="register-home">
+            ← Back to Home
+        </a>
+
+    </section>
+</main>
+</body>
+</html>

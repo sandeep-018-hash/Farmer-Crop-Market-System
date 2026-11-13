@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Crop Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f7f0;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #08783c;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-top: 7px;
+            border: 1px solid #bbb;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            background: #159b45;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #08783c;
+        }
+        
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>✏️ Edit Crop Details</h2>
+
+    <form method="POST">
+
+        <label>Crop Name</label>
+        <input type="text" name="crop"
+               value="{{ crop['crop'] }}" required>
+
+        <label>Quantity (kg)</label>
+        <input type="number" name="quantity"
+               step="0.01" min="0"
+               value="{{ crop['quantity'] }}" required>
+
+        <label>Price per kg (₹)</label>
+        <input type="number" name="expected_price"
+               step="0.01" min="0"
+               value="{{ crop['expected_price'] }}" required>
+
+        <label>Location / Village</label>
+        <input type="text" name="location"
+               value="{{ crop['location'] }}" required>
+
+        <label>Market Name</label>
+        <input type="text" name="market_name"
+               value="{{ crop['market_name'] or '' }}">
+
+        <label>Farmer Phone Number</label>
+        <input type="text" name="phone_number"
+               maxlength="10"
+               value="{{ crop['phone_number'] or '' }}">
+
+        <button type="submit">Update Crop Details</button>
+
+    </form>
+
+    <a href="{{ url_for('home') }}" class="back">
+        ← Back to Dashboard
+    </a>
+
+</div>
+</body>
+</html>

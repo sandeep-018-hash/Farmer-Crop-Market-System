@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup and temporary files
+*_backup*
+app_before_changes.py
+check_owners.py
+fix_owners.py
+check_db.py
